@@ -59,33 +59,18 @@ namespace Com.Expload.Program {
         }
     }
 
-    class BalanceOfRequest: ProgramRequest<int> {
+    class Get_highest_combinationRequest: ProgramRequest<int> {
 
-        public BalanceOfRequest(byte[] programAddress) : base(programAddress) { }
+        public Get_highest_combinationRequest(byte[] programAddress) : base(programAddress) { }
 
         protected override int ParseResult(string json)
         {
             return IntResult.FromJson(json).value;
         }
 
-        public IEnumerator BalanceOf(byte[] arg0)
+        public IEnumerator Get_highest_combination(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6)
         {
-            String json = String.Format("{{ \"address\": {0}, \"method\": \"balanceOf\", \"args\": [{{ \"value\": {1}, \"tpe\": \"bytes\" }}] }}",  "\"" + BitConverter.ToString(ProgramAddress).Replace("-","") + "\"" ,  "\"" + BitConverter.ToString(arg0).Replace("-","") + "\"" );
-            yield return SendJson(json);
-        }
-    }
-    class TransferRequest: ProgramRequest<object> {
-
-        public TransferRequest(byte[] programAddress) : base(programAddress) { }
-
-        protected override object ParseResult(string json)
-        {
-            return null;
-        }
-
-        public IEnumerator Transfer(byte[] arg0, int arg1)
-        {
-            String json = String.Format("{{ \"address\": {0}, \"method\": \"transfer\", \"args\": [{{ \"value\": {1}, \"tpe\": \"bytes\" }}, {{ \"value\": {2}, \"tpe\": \"int32\" }}] }}",  "\"" + BitConverter.ToString(ProgramAddress).Replace("-","") + "\"" ,  "\"" + BitConverter.ToString(arg0).Replace("-","") + "\"" , arg1);
+            String json = String.Format("{{ \"address\": {0}, \"method\": \"get_highest_combination\", \"args\": [{{ \"value\": {1}, \"tpe\": \"int32\" }}, {{ \"value\": {2}, \"tpe\": \"int32\" }}, {{ \"value\": {3}, \"tpe\": \"int32\" }}, {{ \"value\": {4}, \"tpe\": \"int32\" }}, {{ \"value\": {5}, \"tpe\": \"int32\" }}, {{ \"value\": {6}, \"tpe\": \"int32\" }}, {{ \"value\": {7}, \"tpe\": \"int32\" }}] }}",  "\"" + BitConverter.ToString(ProgramAddress).Replace("-","") + "\"" , arg0, arg1, arg2, arg3, arg4, arg5, arg6);
             yield return SendJson(json);
         }
     }

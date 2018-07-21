@@ -4,43 +4,6 @@ using Com.Expload;
 [Program]
 class MyProgram
 {
-    Mapping<Bytes, int> balances = new Mapping<Bytes, int>();
-
-    public int balanceOf(Bytes tokenOwner)
-    {
-        return balances.getDefault(tokenOwner, 0);
-    }
-
-    public void transfer(Bytes to, int tokens)
-    {
-        if (tokens > 0)
-        {
-            if (balances.getDefault(Info.Sender(), 0) >= tokens)
-            {
-                balances.put(Info.Sender(), balances.getDefault(Info.Sender(), 0) - tokens);
-                balances.put(to, balances.getDefault(to, 0) + tokens);
-            }
-        }
-    }
-
-    /* private int[] sort_kill(int[] arr, int len)
-    {
-        int temp = 0;
-        for (int write = 0; write < len; write++)
-        {
-            for (int sort = 0; sort < len - 1; sort++)
-            {
-                if (arr[sort] > arr[sort + 1])
-                {
-                    temp = arr[sort + 1];
-                    arr[sort + 1] = arr[sort];
-                    arr[sort] = temp;
-                }
-            }
-        }
-
-        return arr;
-    } */
     private int get_suit(int card)
     {
         // 0 = spades
