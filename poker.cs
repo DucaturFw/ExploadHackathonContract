@@ -112,7 +112,24 @@ class MyProgram
         
         return select;
     }
+    public int get_highest_combination(int c0, int c1, int c2, int c3, int c4, int c5, int c6)
+    {
+        int[] cards = new int[]{c0,c1,c2,c3,c4,c5,c6};
+        int max = 0;
+        for (int i = 0; i < 21; i++)
+        {
+            int[] combination = select_combination(cards, card_combinations[i]);
+            int val = _get_combination_value(combination[0], combination[1], combination[2], combination[3], combination[4]);
+            if (val > max)
+                max = val;
+        }
+        return max;
+    }
     public int get_combination_value(int c0, int c1, int c2, int c3, int c4)
+    {
+        return _get_combination_value(c0, c1, c2, c3, c4);
+    }
+    private int _get_combination_value(int c0, int c1, int c2, int c3, int c4)
     {
         // if (isRoyalFlush(cards)) // royal flush doesn't mean shit because it's just a straight flush with highest card Ace
         //     return 65000;
