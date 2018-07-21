@@ -112,23 +112,21 @@ class MyProgram
         
         return select;
     }
-    public int get_combination_value(int[] cards)
+    public int get_combination_value(int c0, int c1, int c2, int c3, int c4)
     {
         // if (isRoyalFlush(cards)) // royal flush doesn't mean shit because it's just a straight flush with highest card Ace
         //     return 65000;
         
-        int[] cardVals = {
-            get_value(cards[0]),
-            get_value(cards[1]),
-            get_value(cards[2]),
-            get_value(cards[3]),
-            get_value(cards[4])
-        };
+        int cv0 = get_value(c0);
+        int cv1 = get_value(c1);
+        int cv2 = get_value(c2);
+        int cv3 = get_value(c3);
+        int cv4 = get_value(c4);
 
         // Straight flushes
-        if (isStraightFlush(cards, cardVals))
+        if (isStraightFlush(c0, c1, c2, c3, c4, cv0, cv1, cv2, cv3, cv4))
             return 1000000
-                + cardVals[0] // orders straight flushes on highest card value (2,J,Q,K,A loses to 2,3,4,5,6)
+                + cv0 // orders straight flushes on highest card value (2,J,Q,K,A loses to 2,3,4,5,6)
             ;
         
         // Four of a kind
@@ -136,70 +134,64 @@ class MyProgram
         // K,A,A,A,A
         // 6,6,6,6,Q
         // 6,6,6,6,A
-        if (isFourOfAKind(cardVals))
+        if (isFourOfAKind(cv0, cv1, cv2, cv3, cv4))
             return 900000
-                + 1000 * (cardVals[2] + 1) // get one middle card (there's four of them)
-                + (cardVals[0] + cardVals[4] - cardVals[2]) // kicker
+                + 1000 * (cv2 + 1) // get one middle card (there's four of them)
+                + (cv0 + cv4 - cv2) // kicker
             ;
 
         // Full Houses
-        if (isFullHouse(cardVals))
+        if (isFullHouse(cv0, cv1, cv2, cv3, cv4))
             return 800000
-                + 1000 * (cardVals[2] + 1) // get one middle card (it will always be the one we have 3 of)
-                + (cardVals[0] + cardVals[4] - cardVals[2]) // this will be the one we have only 2 of
+                + 1000 * (cv2 + 1) // get one middle card (it will always be the one we have 3 of)
+                + (cv0 + cv4 - cv2) // this will be the one we have only 2 of
             ;
         
         // Flushes
-        if (isFlush(cards))
+        if (isFlush(c0, c1, c2, c3, c4))
             return 700000
-                + 5 * cardVals[4] // kickers
-                + 4 * cardVals[3]
-                + 3 * cardVals[2]
-                + 2 * cardVals[1]
-                + 1 * cardVals[0]
+                + 5 * cv4 // kickers
+                + 4 * cv3
+                + 3 * cv2
+                + 2 * cv1
+                + 1 * cv0
             ;
         
         // Straights
-        if (isStraight(cardVals))
+        if (isStraight(cv0, cv1, cv2, cv3, cv4))
             return 600000
-                + cardVals[4] // highest card
+                + cv4 // highest card
             ;
         
         // Three of a kind
-        if (isThreeOfAKind(cardVals))
+        if (isThreeOfAKind(cv0, cv1, cv2, cv3, cv4))
             return 500000
-                + 1000 * (cardVals[2] + 1) // get one middle card (it will always be the one we have 3 of)
-                + 5 * cardVals[4] // kickers (their score will always be lower than main card, but will still help decide)
-                + 4 * cardVals[3]
-                + 3 * cardVals[2]
-                + 2 * cardVals[1]
-                + 1 * cardVals[0]
+                + 1000 * (cv2 + 1) // get one middle card (it will always be the one we have 3 of)
+                + 5 * cv4 // kickers (their score will always be lower than main card, but will still help decide)
+                + 4 * cv3
+                + 3 * cv2
+                + 2 * cv1
+                + 1 * cv0
             ;
 
         // Two pair
-        if (isTwoPairs(cardVals))
+        if (isTwoPairs(cv0, cv1, cv2, cv3, cv4))
             return 400000
-                + 1000 * (cardVals[3] + 1) // highest pair
-                + 50 * (cardVals[1] + 1) // lowest pair
-                + (cardVals[0] + cardVals[2] + cardVals[4] - cardVals[1] - cardVals[3]) // voodoo magic! (calculating the kicker)
+                + 1000 * (cv3 + 1) // highest pair
+                + 50 * (cv1 + 1) // lowest pair
+                + (cv0 + cv2 + cv4 - cv1 - cv3) // voodoo magic! (calculating the kicker)
             ;
         // Pairs
-        if (isPair(cardVals))
+        if (isPair(cv0, cv1, cv2, cv3, cv4))
             return 300000
-                + getPairCoef(cardVals)
+                + getPairCoef(cv0, cv1, cv2, cv3, cv4)
             ;
 
         // High cards by rank
-        return 5 * cardVals[4] + 4 * cardVals[3] + 3 * cardVals[2] + 2 * cardVals[1] + cardVals[0];
+        return 5 * cv4 + 4 * cv3 + 3 * cv2 + 2 * cv1 + cv0;
     }
-    public int getPairCoef(int[] cardVals)
+    public int getPairCoef(int c0, int c1, int c2, int c3, int c4)
     {
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-        
         if (c0 == c1)
             return 1000 * (c0 + 1) + 5 * c4 + 4 * c3 + 3 * c2;
         if (c1 == c2)
@@ -229,19 +221,9 @@ class MyProgram
 //  ######   #######  ##     ## ########   ######  
 
 
-    public bool isStraightFlush(int[] cards, int[] cardVals)
-    {
-        return isFlush(cards) && isStraight(cardVals);
-    }
-    public bool isFourOfAKind(int[] cardVals)
+    public bool isFourOfAKind(int c0, int c1, int c2, int c3, int c4)
     {
         // optimized version (cards are sorted by value already)
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-
         if ((c0 == c1)
             && (c0 == c2)
             && (c0 == c3))
@@ -266,15 +248,9 @@ class MyProgram
         }
         return false; */
     }
-    public bool isFullHouse(int[] cardVals)
+    public bool isFullHouse(int c0, int c1, int c2, int c3, int c4)
     {
         // 5,5,9,9,9
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-
         if ((c0 == c1) // 2 of a kind
             && (c2 == c3) && (c2 == c4)) // 3 of a kind
             return true;
@@ -286,30 +262,37 @@ class MyProgram
         
         return false;
     }
-    public bool isFlush(int[] cards)
+    public bool isFlush(int c0, int c1, int c2, int c3, int c4)
     {
-        int suit = get_suit(cards[0]);
-        return (suit == get_suit(cards[1]))
-            && (suit == get_suit(cards[2]))
-            && (suit == get_suit(cards[3]))
-            && (suit == get_suit(cards[4]))
+        int suit = get_suit(c0);
+        return (suit == get_suit(c1))
+            && (suit == get_suit(c2))
+            && (suit == get_suit(c3))
+            && (suit == get_suit(c4))
         ;
     }
-    public bool isStraight(int[] cardVals)
+    public bool isStraightSimple(int c0, int c1, int c2, int c3, int c4)
+    {
+        if (c0 != (c1 - 1))
+            return false;
+        if (c0 != (c2 - 2))
+            return false;
+        if (c0 != (c3 - 3))
+            return false;
+        if (c0 != (c4 - 4))
+            return false;
+        
+        return true;
+    }
+    public bool isStraight(int c0, int c1, int c2, int c3, int c4)
     {
         // 5,6,7,8,9
         // 2,3,4,5,A
         // 10,J,Q,K,A
         // straights can't wrap around (2,3,4,K,A is not a straight)
-        if (isStraightSimple(cardVals))
+        if (isStraightSimple(c0, c1, c2, c3, c4))
             return true;
         
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-
         if (c0 != CARD_VAL_2)
             return false;
         if (c4 != CARD_VAL_A)
@@ -327,26 +310,14 @@ class MyProgram
         
         return false;
     }
-    public bool isStraightSimple(int[] cardVals)
-    {
-        int val = cardVals[0];
-        for (int i = 1; i < 5; i++)
+    public bool isStraightFlush(int c0, int c1, int c2, int c3, int c4, int cv0, int cv1, int cv2, int cv3, int cv4)
         {
-            if (cardVals[i] != (val + i))
-                return false;
-        }
-        return true;
+        return isFlush(c0, c1, c2, c3, c4) && isStraight(cv0, cv1, cv2, cv3, cv4);
     }
     
     // Three of a kind
-    public bool isThreeOfAKind(int[] cardVals)
+    public bool isThreeOfAKind(int c0, int c1, int c2, int c3, int c4)
     {
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-
         if ((c0 == c1)
             && (c0 == c2))
             return true;
@@ -362,14 +333,8 @@ class MyProgram
         return false;
     }
     // Two pair
-    public bool isTwoPairs(int[] cardVals)
+    public bool isTwoPairs(int c0, int c1, int c2, int c3, int c4)
     {
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-
         if (c0 == c1) // 2,2,3,3,4 or 2,2,3,4,4
             return ((c2 == c3) || (c3 == c4));
         
@@ -379,14 +344,8 @@ class MyProgram
         return false;
     }
     // Pairs
-    public bool isPair(int[] cardVals)
+    public bool isPair(int c0, int c1, int c2, int c3, int c4)
     {
-        int c0 = cardVals[0];
-        int c1 = cardVals[1];
-        int c2 = cardVals[2];
-        int c3 = cardVals[3];
-        int c4 = cardVals[4];
-
         return (c0 == c1) || (c1 == c2) || (c2 == c3) || (c3 == c4);
     }
 
