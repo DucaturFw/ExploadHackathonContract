@@ -23,12 +23,12 @@ class MyProgram
         }
     }
 
-    public int[] sort_kill(int[] arr)
+    public int[] sort_kill(int[] arr, int len)
     {
         int temp = 0;
-        for (int write = 0; write < arr.Length; write++)
+        for (int write = 0; write < len; write++)
         {
-            for (int sort = 0; sort < arr.Length - 1; sort++)
+            for (int sort = 0; sort < len - 1; sort++)
             {
                 if (arr[sort] > arr[sort + 1])
                 {
@@ -64,12 +64,12 @@ class MyProgram
     private int CARD_VAL_2 = 0;
     private int CARD_VAL_A = 12;
 
-    public int[] sort_cards(int[] cards)
+    public int[] sort_cards(int[] cards, int len)
     {
         int temp = 0;
-        for (int write = 0; write < cards.Length; write++)
+        for (int write = 0; write < len; write++)
         {
-            for (int sort = 0; sort < cards.Length - 1; sort++)
+            for (int sort = 0; sort < len - 1; sort++)
             {
                 int val1 = get_value(cards[sort]);
                 int val2 = get_value(cards[sort + 1]);
@@ -87,23 +87,27 @@ class MyProgram
     public byte[] card_combinations = new byte[] {
         31, 47, 79, 55, 87, 103, 59, 91, 107, 115, 61, 93, 109, 117, 121, 62, 94, 110, 118, 122, 124
     };
+    private int has_flag(int b1, int b2)
+    {
+        return (b1 / b2) % 2;
+    }
     public int[] select_combination(int[] cards, byte comb)
     {
         int[] select = new int[]{0,0,0,0,0};
         int i = 0;
-        if ((comb & 1) > 0)
+        if (has_flag(comb, 1) > 0)
             select[i++] = cards[0];
-        if ((comb & 2) > 0)
+        if (has_flag(comb, 2) > 0)
             select[i++] = cards[1];
-        if ((comb & 4) > 0)
+        if (has_flag(comb, 4) > 0)
             select[i++] = cards[2];
-        if ((comb & 8) > 0)
+        if (has_flag(comb, 8) > 0)
             select[i++] = cards[3];
-        if ((comb & 16) > 0)
+        if (has_flag(comb, 16) > 0)
             select[i++] = cards[4];
-        if ((comb & 32) > 0)
+        if (has_flag(comb, 32) > 0)
             select[i++] = cards[5];
-        if ((comb & 64) > 0)
+        if (has_flag(comb, 64) > 0)
             select[i++] = cards[6];
         
         return select;
