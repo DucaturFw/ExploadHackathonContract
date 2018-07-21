@@ -47,7 +47,7 @@ class MyProgram
         // 1 = clubs
         // 2 = hearts
         // 3 = diamonds
-        return card % 20;
+        return card - (card % 20);
     }
     private int get_value(int card)
     {
@@ -59,7 +59,7 @@ class MyProgram
         // 10 = Q
         // 11 = K
         // 12 = A
-        return card - (card % 20);
+        return card % 20;
     }
     private int CARD_VAL_2 = 0;
     private int CARD_VAL_A = 12;
