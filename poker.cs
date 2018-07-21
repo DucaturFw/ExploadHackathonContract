@@ -203,13 +203,6 @@ class MyProgram
         
         return 0;
     }
-    /* public bool isRoyalFlush(int[] cards)
-    {
-        if (cards[0] != 10)
-            return false;
-        
-        return isStraightFlush(cards);
-    } */
 
 
 //  ######   #######  ##     ## ########   ######  
@@ -235,18 +228,6 @@ class MyProgram
             return true;
         
         return false;
-
-        /* byte[] combs = { 0,0,0, 0,0,0, 0,0,0, 0,0,0 };
-        for (int i = 0; i < 5; i++)
-        {
-            combs[get_value(cards[i])]++;
-        }
-        for (int i = 0; i < combs.Length; i++)
-        {
-            if (combs[i] == 4)
-                return true;
-        }
-        return false; */
     }
     private bool isFullHouse(int c0, int c1, int c2, int c3, int c4)
     {
@@ -348,43 +329,6 @@ class MyProgram
     {
         return (c0 == c1) || (c1 == c2) || (c2 == c3) || (c3 == c4);
     }
-
-
-                        
-// ####### ####### ####### ####### ####### #######
-
-
-
-
-
-    /* public bool IsValid(HandType handType)
-    {
-        switch (handType)
-        {
-            case HandType.RoyalFlush:
-                return IsValid(HandType.StraightFlush) && Cards[4].Rank == RankType.Ace;
-            case HandType.StraightFlush:
-                return IsValid(HandType.Flush) && IsValid(HandType.Straight);
-            case HandType.FourOfAKind:
-                return GetGroupByRankCount(4) == 1;
-            case HandType.FullHouse:
-                return IsValid(HandType.ThreeOfAKind) && IsValid(HandType.OnePair);
-            case HandType.Flush:
-                return GetGroupBySuitCount(5) == 1;
-            case HandType.Straight:
-                return (int)Cards[4].Rank - (int)Cards[0].Rank == 4
-                    || Cards[0].Rank == RankType.Ace;
-            case HandType.ThreeOfAKind:
-                return GetGroupByRankCount(3) == 1;
-            case HandType.TwoPairs:
-                return GetGroupByRankCount(2) == 2;
-            case HandType.OnePair:
-                return GetGroupByRankCount(2) == 1;
-            case HandType.HighCard:
-                return GetGroupByRankCount(1) == 5;
-        }
-        return false;
-    } */
 }
 
 class MainClass
