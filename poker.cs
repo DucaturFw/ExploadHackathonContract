@@ -23,7 +23,7 @@ class MyProgram
         }
     }
 
-    public int[] sort_kill(int[] arr, int len)
+    /* private int[] sort_kill(int[] arr, int len)
     {
         int temp = 0;
         for (int write = 0; write < len; write++)
@@ -40,8 +40,8 @@ class MyProgram
         }
 
         return arr;
-    }
-    public int get_suit(int card)
+    } */
+    private int get_suit(int card)
     {
         // 0 = spades
         // 1 = clubs
@@ -49,7 +49,7 @@ class MyProgram
         // 3 = diamonds
         return card % 20;
     }
-    public int get_value(int card)
+    private int get_value(int card)
     {
         // 0 = 2
         // 1 = 3
@@ -64,7 +64,7 @@ class MyProgram
     private int CARD_VAL_2 = 0;
     private int CARD_VAL_A = 12;
 
-    public int[] sort_cards(int[] cards, int len)
+    /* private int[] sort_cards(int[] cards, int len)
     {
         int temp = 0;
         for (int write = 0; write < len; write++)
@@ -83,15 +83,15 @@ class MyProgram
         }
 
         return cards;
-    }
-    public byte[] card_combinations = new byte[] {
+    } */
+    private byte[] card_combinations = new byte[] {
         31, 47, 79, 55, 87, 103, 59, 91, 107, 115, 61, 93, 109, 117, 121, 62, 94, 110, 118, 122, 124
     };
     private int has_flag(int b1, int b2)
     {
         return (b1 / b2) % 2;
     }
-    public int[] select_combination(int[] cards, byte comb)
+    private int[] select_combination(int[] cards, byte comb)
     {
         int[] select = new int[]{0,0,0,0,0};
         int i = 0;
@@ -190,7 +190,7 @@ class MyProgram
         // High cards by rank
         return 5 * cv4 + 4 * cv3 + 3 * cv2 + 2 * cv1 + cv0;
     }
-    public int getPairCoef(int c0, int c1, int c2, int c3, int c4)
+    private int getPairCoef(int c0, int c1, int c2, int c3, int c4)
     {
         if (c0 == c1)
             return 1000 * (c0 + 1) + 5 * c4 + 4 * c3 + 3 * c2;
@@ -221,7 +221,7 @@ class MyProgram
 //  ######   #######  ##     ## ########   ######  
 
 
-    public bool isFourOfAKind(int c0, int c1, int c2, int c3, int c4)
+    private bool isFourOfAKind(int c0, int c1, int c2, int c3, int c4)
     {
         // optimized version (cards are sorted by value already)
         if ((c0 == c1)
@@ -248,7 +248,7 @@ class MyProgram
         }
         return false; */
     }
-    public bool isFullHouse(int c0, int c1, int c2, int c3, int c4)
+    private bool isFullHouse(int c0, int c1, int c2, int c3, int c4)
     {
         // 5,5,9,9,9
         if ((c0 == c1) // 2 of a kind
@@ -262,7 +262,7 @@ class MyProgram
         
         return false;
     }
-    public bool isFlush(int c0, int c1, int c2, int c3, int c4)
+    private bool isFlush(int c0, int c1, int c2, int c3, int c4)
     {
         int suit = get_suit(c0);
         return (suit == get_suit(c1))
@@ -271,7 +271,7 @@ class MyProgram
             && (suit == get_suit(c4))
         ;
     }
-    public bool isStraightSimple(int c0, int c1, int c2, int c3, int c4)
+    private bool isStraightSimple(int c0, int c1, int c2, int c3, int c4)
     {
         if (c0 != (c1 - 1))
             return false;
@@ -284,7 +284,7 @@ class MyProgram
         
         return true;
     }
-    public bool isStraight(int c0, int c1, int c2, int c3, int c4)
+    private bool isStraight(int c0, int c1, int c2, int c3, int c4)
     {
         // 5,6,7,8,9
         // 2,3,4,5,A
@@ -292,7 +292,7 @@ class MyProgram
         // straights can't wrap around (2,3,4,K,A is not a straight)
         if (isStraightSimple(c0, c1, c2, c3, c4))
             return true;
-        
+
         if (c0 != CARD_VAL_2)
             return false;
         if (c4 != CARD_VAL_A)
@@ -310,13 +310,13 @@ class MyProgram
         
         return false;
     }
-    public bool isStraightFlush(int c0, int c1, int c2, int c3, int c4, int cv0, int cv1, int cv2, int cv3, int cv4)
-        {
+    private bool isStraightFlush(int c0, int c1, int c2, int c3, int c4, int cv0, int cv1, int cv2, int cv3, int cv4)
+    {
         return isFlush(c0, c1, c2, c3, c4) && isStraight(cv0, cv1, cv2, cv3, cv4);
     }
     
     // Three of a kind
-    public bool isThreeOfAKind(int c0, int c1, int c2, int c3, int c4)
+    private bool isThreeOfAKind(int c0, int c1, int c2, int c3, int c4)
     {
         if ((c0 == c1)
             && (c0 == c2))
@@ -333,7 +333,7 @@ class MyProgram
         return false;
     }
     // Two pair
-    public bool isTwoPairs(int c0, int c1, int c2, int c3, int c4)
+    private bool isTwoPairs(int c0, int c1, int c2, int c3, int c4)
     {
         if (c0 == c1) // 2,2,3,3,4 or 2,2,3,4,4
             return ((c2 == c3) || (c3 == c4));
@@ -344,7 +344,7 @@ class MyProgram
         return false;
     }
     // Pairs
-    public bool isPair(int c0, int c1, int c2, int c3, int c4)
+    private bool isPair(int c0, int c1, int c2, int c3, int c4)
     {
         return (c0 == c1) || (c1 == c2) || (c2 == c3) || (c3 == c4);
     }
