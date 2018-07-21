@@ -89,4 +89,19 @@ namespace Com.Expload.Program {
             yield return SendJson(json);
         }
     }
+    class Get_combination_valueRequest: ProgramRequest<int> {
+
+        public Get_combination_valueRequest(byte[] programAddress) : base(programAddress) { }
+
+        protected override int ParseResult(string json)
+        {
+            return IntResult.FromJson(json).value;
+        }
+
+        public IEnumerator Get_combination_value(int arg0, int arg1, int arg2, int arg3, int arg4)
+        {
+            String json = String.Format("{{ \"address\": {0}, \"method\": \"get_combination_value\", \"args\": [{{ \"value\": {1}, \"tpe\": \"int32\" }}, {{ \"value\": {2}, \"tpe\": \"int32\" }}, {{ \"value\": {3}, \"tpe\": \"int32\" }}, {{ \"value\": {4}, \"tpe\": \"int32\" }}, {{ \"value\": {5}, \"tpe\": \"int32\" }}] }}",  "\"" + BitConverter.ToString(ProgramAddress).Replace("-","") + "\"" , arg0, arg1, arg2, arg3, arg4);
+            yield return SendJson(json);
+        }
+    }
 }
