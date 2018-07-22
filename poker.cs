@@ -58,7 +58,14 @@ class MyProgram
     }
     public string showdown(string cardSalt, Bytes dealtCards)
     {
-        int pcount = players.getDefault(-1, new Bytes(0))[0];
+        return _showdown(cardSalt, dealtCards);
+    }
+    private string _showdown(string cardSalt, Bytes dealtCards)
+    {
+        byte zero = Convert.ToByte(0);
+        Bytes empty = new Bytes(zero);
+        Bytes defPlayer = players.getDefault(-1, empty);
+        int pcount = defPlayer[0];
         int dealt = pcount * 2 + table_cards.getDefault(-1, 0);
         
         if (dealt != dealtCards[0]) // length
