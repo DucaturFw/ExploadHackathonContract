@@ -62,12 +62,12 @@ class MyProgram
         int dealt = pcount * 2 + table_cards.getDefault(-1, 0);
         
         if (dealt != dealtCards[0]) // length
-            return "count mismatch! was: " + dealt + " got: " + dealtCards[0]; // showdown can't be verified!
+            return "count mismatch! was: " + Convert.ToString(dealt) + " got: " + Convert.ToString(dealtCards[0]); // showdown can't be verified!
         
         for (int i = 0; i < dealt; i++)
         {
             int card = dealtCards[i + 1];
-            Bytes h2 = StdLib.Ripemd160(cardSalt + card);
+            Bytes h2 = StdLib.Ripemd160(cardSalt + Convert.ToString(card));
             if (i < (pcount * 2))
             {
                 Bytes hash;
@@ -78,7 +78,7 @@ class MyProgram
                     hash = player_cards_2.getDefault(p, Bytes.EMPTY);
                 
                 if (hash != h2)
-                    return "cards mismatch! #" + i + " (" + card + ") expected: " + hash + " got: " + h2;
+                    return "cards mismatch! #" + Convert.ToString(i) + " (" + Convert.ToString(card) + ") expected: " + Convert.ToString(hash) + " got: " + Convert.ToString(h2);
             }
         }
         // give winners their chips
@@ -141,7 +141,7 @@ class MyProgram
         bankrolls.put(winner, wbank + totalWin);
 
         return "success!";
-    }
+    } 
     public void create_player(Bytes p, int bankroll)
     {
         bankrolls.put(p, bankroll);
@@ -150,9 +150,9 @@ class MyProgram
     {
         int old = bets.getDefault(p, 0);
         if (bet <= old)
-            return "bet is lower than before! old: " + old + ", new: " + bet;
+            return "bet is lower than before! old: " + Convert.ToString(old) + ", new: " + Convert.ToString(bet);
         if (bet > bankrolls.getDefault(p, 0))
-            return "not enough bankroll! bet: " + bet + ", bankroll: " + bankrolls.getDefault(p, 0);
+            return "not enough bankroll! bet: " + Convert.ToString(bet) + ", bankroll: " + Convert.ToString(bankrolls.getDefault(p, 0));
         
         bets.put(p, bet);
         return "success!";
