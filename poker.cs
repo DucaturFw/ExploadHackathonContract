@@ -68,12 +68,12 @@ class MyProgram
         int pcount = defPlayer[0];
         int dealt = pcount * 2 + table_cards.getDefault(-1, 0);
         
-        if (dealt != dealtCards[0]) // length
+        if (dealt != Convert.ToInt32(dealtCards[0])) // length
             return "count mismatch! was: " + Convert.ToString(dealt) + " got: " + Convert.ToString(dealtCards[0]); // showdown can't be verified!
         
         for (int i = 0; i < dealt; i++)
         {
-            int card = dealtCards[i + 1];
+            int card = Convert.ToInt32(dealtCards[i + 1]);
             Bytes h2 = StdLib.Ripemd160(cardSalt + Convert.ToString(card));
             if (i < (pcount * 2))
             {
@@ -107,8 +107,8 @@ class MyProgram
             if (!fold)
             {
                 int[] cards = new int[]{
-                    player_cards_1.getDefault(player, Bytes.EMPTY)[0],
-                    player_cards_2.getDefault(player, Bytes.EMPTY)[0],
+                    Convert.ToInt32(player_cards_1.getDefault(player, Bytes.EMPTY)[0]),
+                    Convert.ToInt32(player_cards_2.getDefault(player, Bytes.EMPTY)[0]),
                     table_cards.getDefault(0, -1),
                     table_cards.getDefault(1, -1),
                     table_cards.getDefault(2, -1),
@@ -234,11 +234,11 @@ class MyProgram
         for (int i = 0; i < 21; i++)
         {
             Bytes combination = select_combination(c0, c1, c2, c3, c4, c5, c6, card_combinations[i]);
-            int cc0 = combination[0];
-            int cc1 = combination[1];
-            int cc2 = combination[2];
-            int cc3 = combination[3];
-            int cc4 = combination[4];
+            int cc0 = Convert.ToInt32(combination[0]);
+            int cc1 = Convert.ToInt32(combination[1]);
+            int cc2 = Convert.ToInt32(combination[2]);
+            int cc3 = Convert.ToInt32(combination[3]);
+            int cc4 = Convert.ToInt32(combination[4]);
             int val = _get_combination_value(cc0, cc1, cc2, cc3, cc4);
             if (val > max)
                 max = val;
