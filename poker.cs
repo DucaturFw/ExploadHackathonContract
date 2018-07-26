@@ -197,9 +197,9 @@ class MyProgram
     private int CARD_VAL_2 = 0;
     private int CARD_VAL_A = 12;
 
-    private byte[] card_combinations = new byte[] {
+    private Bytes card_combinations = new Bytes (
         31, 47, 79, 55, 87, 103, 59, 91, 107, 115, 61, 93, 109, 117, 121, 62, 94, 110, 118, 122, 124
-    };
+    );
     private int has_flag(int b1, int b2)
     {
         return (b1 / b2) % 2;
