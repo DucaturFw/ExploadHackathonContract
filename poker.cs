@@ -70,15 +70,15 @@ class MyProgram
             Bytes cardHash = StdLib.Ripemd160(cardSalt + Convert.ToString(card));
             if (i < (playersCount * 2))
             {
-                Bytes playerHash;
+                Bytes playerCardHash;
                 Bytes p = Players.get(i % playersCount);
                 if (i < playersCount)
-                    playerHash = PlayerCards1.getDefault(p, Bytes.EMPTY);
+                    playerCardHash = PlayerCards1.getDefault(p, Bytes.EMPTY);
                 else
-                    playerHash = PlayerCards2.getDefault(p, Bytes.EMPTY);
+                    playerCardHash = PlayerCards2.getDefault(p, Bytes.EMPTY);
                 
-                if (playerHash != cardHash)
-                    return "cards mismatch! #" + Convert.ToString(i) + " (" + Convert.ToString(card) + ") expected: " + Convert.ToString(playerHash) + " got: " + Convert.ToString(cardHash);
+                if (playerCardHash != cardHash)
+                    return "cards mismatch! #" + Convert.ToString(i) + " (" + Convert.ToString(card) + ") expected: " + Convert.ToString(playerCardHash) + " got: " + Convert.ToString(cardHash);
             }
         }
         // give winners their chips
