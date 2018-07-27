@@ -4,125 +4,118 @@ using Com.Expload;
 [Program]
 class MyProgram
 {
-    public Mapping<Bytes, Bytes> player_cards_1 = new Mapping<Bytes, Bytes>();
-    public Mapping<Bytes, Bytes> player_cards_2 = new Mapping<Bytes, Bytes>();
-    public Mapping<int, int> table_cards = new Mapping<int, int>();
-    public Mapping<Bytes, bool> folded = new Mapping<Bytes, bool>();
+    public Mapping<Bytes, Bytes> PlayerCards1 = new Mapping<Bytes, Bytes>();
+    public Mapping<Bytes, Bytes> PlayerCards2 = new Mapping<Bytes, Bytes>();
+    public Mapping<int, int> TableCards = new Mapping<int, int>();
+    public Mapping<Bytes, bool> Folded = new Mapping<Bytes, bool>();
 
-    public Mapping<int, Bytes> players = new Mapping<int, Bytes>();
+    public Mapping<int, Bytes> Players = new Mapping<int, Bytes>();
 
-    public Mapping<Bytes, int> bets = new Mapping<Bytes, int>();
-    public Mapping<Bytes, int> bankrolls = new Mapping<Bytes, int>();
+    public Mapping<Bytes, int> Bets = new Mapping<Bytes, int>();
+    public Mapping<Bytes, int> Bankrolls = new Mapping<Bytes, int>();
 
-    public void deal(Bytes p1, Bytes p2, Bytes p3, Bytes p4, Bytes p5, Bytes p6, Bytes p7, Bytes p8, Bytes p9)
+    public void Deal(Bytes p1, Bytes p2, Bytes p3, Bytes p4, Bytes p5, Bytes p6, Bytes p7, Bytes p8, Bytes p9)
     {
-        table_cards = new Mapping<int, int>();
-        table_cards.put(-1, 0);
-        player_cards_1 = new Mapping<Bytes, Bytes>();
-        player_cards_2 = new Mapping<Bytes, Bytes>();
-        bets = new Mapping<Bytes, int>();
-
-        players = new Mapping<int, Bytes>();
+        TableCards.put(-1, 0);
         int len = 0;
-        if (p1 != Bytes.EMPTY) players.put(len++, p1);
-        if (p2 != Bytes.EMPTY) players.put(len++, p2);
-        if (p3 != Bytes.EMPTY) players.put(len++, p3);
-        if (p4 != Bytes.EMPTY) players.put(len++, p4);
-        if (p5 != Bytes.EMPTY) players.put(len++, p5);
-        if (p6 != Bytes.EMPTY) players.put(len++, p6);
-        if (p7 != Bytes.EMPTY) players.put(len++, p7);
-        if (p8 != Bytes.EMPTY) players.put(len++, p8);
-        players.put(-1, new Bytes(Convert.ToByte(len)));
+        if (p1 != Bytes.EMPTY) Players.put(len++, p1);
+        if (p2 != Bytes.EMPTY) Players.put(len++, p2);
+        if (p3 != Bytes.EMPTY) Players.put(len++, p3);
+        if (p4 != Bytes.EMPTY) Players.put(len++, p4);
+        if (p5 != Bytes.EMPTY) Players.put(len++, p5);
+        if (p6 != Bytes.EMPTY) Players.put(len++, p6);
+        if (p7 != Bytes.EMPTY) Players.put(len++, p7);
+        if (p8 != Bytes.EMPTY) Players.put(len++, p8);
+        Players.put(-1, new Bytes(Convert.ToByte(len)));
     }
-    public void dealPublicCard(int card)
+    public void DealPublicCard(int card)
     {
-        int len = table_cards.getDefault(-1, 0);
-        table_cards.put(len++, card);
-        table_cards.put(-1, len);
+        int len = TableCards.getDefault(-1, 0);
+        TableCards.put(len++, card);
+        TableCards.put(-1, len);
     }
-    public void dealPrivateCard(int player, Bytes cardHash)
+    public void DealPrivateCard(int player, Bytes cardHash)
     {
-        Bytes p = players.getDefault(player, Bytes.EMPTY);
+        Bytes p = Players.getDefault(player, Bytes.EMPTY);
 
         if (p == Bytes.EMPTY)
             return; // no such player!
         
-        if (player_cards_1.getDefault(p, Bytes.EMPTY) == Bytes.EMPTY)
+        if (PlayerCards1.getDefault(p, Bytes.EMPTY) == Bytes.EMPTY)
         {
-            player_cards_1.put(p, cardHash);
+            PlayerCards1.put(p, cardHash);
         }
         else
         {
-            player_cards_2.put(p, cardHash);
+            PlayerCards2.put(p, cardHash);
         }
     }
-    public string showdown(string cardSalt, Bytes dealtCards)
+    public string Showdown(string cardSalt, Bytes dealtCards)
     {
-        return _showdown(cardSalt, dealtCards);
+        return showdown(cardSalt, dealtCards);
     }
-    private string _showdown(string cardSalt, Bytes dealtCards)
+    private string showdown(string cardSalt, Bytes dealtCards)
     {
-        byte zero = Convert.ToByte(0);
-        Bytes empty = new Bytes(zero);
-        Bytes defPlayer = players.getDefault(-1, empty);
-        int pcount = defPlayer[0];
-        int dealt = pcount * 2 + table_cards.getDefault(-1, 0);
+        Bytes playersCountB = Players.getDefault(-1, new Bytes(0));
+        int playersCount = playersCountB[0];
+        int dealt = playersCount * 2 + TableCards.getDefault(-1, 0);
         
         if (dealt != Convert.ToInt32(dealtCards[0])) // length
+	    // should be a built-in error
             return "count mismatch! was: " + Convert.ToString(dealt) + " got: " + Convert.ToString(dealtCards[0]); // showdown can't be verified!
         
         for (int i = 0; i < dealt; i++)
         {
             int card = Convert.ToInt32(dealtCards[i + 1]);
-            Bytes h2 = StdLib.Ripemd160(cardSalt + Convert.ToString(card));
-            if (i < (pcount * 2))
+            Bytes cardHash = StdLib.Ripemd160(cardSalt + Convert.ToString(card));
+            if (i < (playersCount * 2))
             {
-                Bytes hash;
-                Bytes p = players.get(i % pcount);
-                if (i < pcount)
-                    hash = player_cards_1.getDefault(p, Bytes.EMPTY);
+                Bytes playerHash;
+                Bytes p = Players.get(i % playersCount);
+                if (i < playersCount)
+                    playerHash = PlayerCards1.getDefault(p, Bytes.EMPTY);
                 else
-                    hash = player_cards_2.getDefault(p, Bytes.EMPTY);
+                    playerHash = PlayerCards2.getDefault(p, Bytes.EMPTY);
                 
-                if (hash != h2)
-                    return "cards mismatch! #" + Convert.ToString(i) + " (" + Convert.ToString(card) + ") expected: " + Convert.ToString(hash) + " got: " + Convert.ToString(h2);
+                if (playerHash != cardHash)
+                    return "cards mismatch! #" + Convert.ToString(i) + " (" + Convert.ToString(card) + ") expected: " + Convert.ToString(playerHash) + " got: " + Convert.ToString(cardHash);
             }
         }
         // give winners their chips
         int totalWin = 0;
-        for (int i = 0; i < pcount; i++)
+        for (int i = 0; i < playersCount; i++)
         {
-            Bytes player = players.getDefault(i, Bytes.EMPTY);
-            int bet = bets.getDefault(player, 0);
+            Bytes player = Players.getDefault(i, Bytes.EMPTY);
+            int bet = Bets.getDefault(player, 0);
             totalWin = totalWin + bet;
-            int bank = bankrolls.getDefault(player, 0);
-            bankrolls.put(player, bank - bet);
+            int bank = Bankrolls.getDefault(player, 0);
+            Bankrolls.put(player, bank - bet);
         }
         int maxHand = 0;
         Bytes winner = Bytes.EMPTY;
-        for (int i = 0; i < pcount; i++)
+        for (int i = 0; i < playersCount; i++)
         {
-            Bytes player = players.getDefault(i, Bytes.EMPTY);
-            bool fold = folded.getDefault(player, false);
+            Bytes player = Players.getDefault(i, Bytes.EMPTY);
+            bool fold = Folded.getDefault(player, false);
             if (!fold)
             {
                 int[] cards = new int[]{
-                    Convert.ToInt32(player_cards_1.getDefault(player, Bytes.EMPTY)[0]),
-                    Convert.ToInt32(player_cards_2.getDefault(player, Bytes.EMPTY)[0]),
-                    table_cards.getDefault(0, -1),
-                    table_cards.getDefault(1, -1),
-                    table_cards.getDefault(2, -1),
-                    table_cards.getDefault(3, -1),
-                    table_cards.getDefault(4, -1),
+                    Convert.ToInt32(PlayerCards1.getDefault(player, Bytes.EMPTY)[0]),
+                    Convert.ToInt32(PlayerCards2.getDefault(player, Bytes.EMPTY)[0]),
+                    TableCards.getDefault(0, -1),
+                    TableCards.getDefault(1, -1),
+                    TableCards.getDefault(2, -1),
+                    TableCards.getDefault(3, -1),
+                    TableCards.getDefault(4, -1),
                 };
-                
+               
                 int temp = 0;
                 for (int write = 0; write < 7; write++)
                 {
-                    for (int sort = 0; sort < 7 - 1; sort++)
+                    for (int sort = 0; sort < 7 - write - 1; sort++)
                     {
-                        int val1 = get_value(cards[sort]);
-                        int val2 = get_value(cards[sort + 1]);
+                        int val1 = getValue(cards[sort]);
+                        int val2 = getValue(cards[sort + 1]);
                         if (val1 > val2)
                         {
                             temp = cards[sort + 1];
@@ -132,7 +125,7 @@ class MyProgram
                     }
                 }
 
-                int best = _get_highest_combination(cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6]);
+                int best = getHighestCombination(cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6]);
                 if (best > maxHand)
                 {
                     maxHand = best;
@@ -144,24 +137,24 @@ class MyProgram
         if (winner == Bytes.EMPTY)
             return "couldn't find winner!";
         
-        int wbank = bankrolls.getDefault(winner, 0);
-        bankrolls.put(winner, wbank + totalWin);
+        int wbank = Bankrolls.getDefault(winner, 0);
+        Bankrolls.put(winner, wbank + totalWin);
 
         return "success!";
     } 
-    public void create_player(Bytes p, int bankroll)
+    public void CreatePlayer(Bytes p, int bankroll)
     {
-        bankrolls.put(p, bankroll);
+        Bankrolls.put(p, bankroll);
     }
-    public string update_bet(Bytes p, int bet)
+    public string UpdateBet(Bytes p, int bet)
     {
-        int old = bets.getDefault(p, 0);
+        int old = Bets.getDefault(p, 0);
         if (bet <= old)
             return "bet is lower than before! old: " + Convert.ToString(old) + ", new: " + Convert.ToString(bet);
-        if (bet > bankrolls.getDefault(p, 0))
-            return "not enough bankroll! bet: " + Convert.ToString(bet) + ", bankroll: " + Convert.ToString(bankrolls.getDefault(p, 0));
+        if (bet > Bankrolls.getDefault(p, 0))
+            return "not enough bankroll! bet: " + Convert.ToString(bet) + ", bankroll: " + Convert.ToString(Bankrolls.getDefault(p, 0));
         
-        bets.put(p, bet);
+        Bets.put(p, bet);
         return "success!";
     }
 
@@ -174,15 +167,15 @@ class MyProgram
 // ##    ## ##     ## ##    ##  ##     ## ##    ## 
 //  ######  ##     ## ##     ## ########   ######  
 
-    private int get_suit(int card)
+    private int getSuit(int card)
     {
         // 0 = spades
         // 1 = clubs
         // 2 = hearts
         // 3 = diamonds
-        return card - (card % 20);
+        return card / 13;
     }
-    private int get_value(int card)
+    private int getValue(int card)
     {
         // 0 = 2
         // 1 = 3
@@ -192,70 +185,70 @@ class MyProgram
         // 10 = Q
         // 11 = K
         // 12 = A
-        return card % 20;
+        return card % 13;
     }
-    private int CARD_VAL_2 = 0;
-    private int CARD_VAL_A = 12;
 
-    private Bytes card_combinations = new Bytes (
+    // magic numbers!
+    private Bytes cardCombinations = new Bytes (
         31, 47, 79, 55, 87, 103, 59, 91, 107, 115, 61, 93, 109, 117, 121, 62, 94, 110, 118, 122, 124
     );
-    private int has_flag(int b1, int b2)
+    private bool hasFlag(int b1, int b2)
     {
-        return (b1 / b2) % 2;
+	// should be bitwise operation
+        return (b1 / b2) % 2 == 1;
     }
-    private Bytes select_combination(int c0, int c1, int c2, int c3, int c4, int c5, int c6, byte comb)
+    private Bytes selectCombination(int c0, int c1, int c2, int c3, int c4, int c5, int c6, byte comb)
     {
         Bytes select = Bytes.EMPTY;
-        if (has_flag(comb, 1) > 0)
+        if (hasFlag(comb, 1))
             select = select.Concat(new Bytes(Convert.ToByte(c0)));
-        if (has_flag(comb, 2) > 0)
+        if (hasFlag(comb, 2))
             select = select.Concat(new Bytes(Convert.ToByte(c1)));
-        if (has_flag(comb, 4) > 0)
+        if (hasFlag(comb, 4))
             select = select.Concat(new Bytes(Convert.ToByte(c2)));
-        if (has_flag(comb, 8) > 0)
+        if (hasFlag(comb, 8))
             select = select.Concat(new Bytes(Convert.ToByte(c3)));
-        if (has_flag(comb, 16) > 0)
+        if (hasFlag(comb, 16))
             select = select.Concat(new Bytes(Convert.ToByte(c4)));
-        if (has_flag(comb, 32) > 0)
+        if (hasFlag(comb, 32))
             select = select.Concat(new Bytes(Convert.ToByte(c5)));
-        if (has_flag(comb, 64) > 0)
+        if (hasFlag(comb, 64))
             select = select.Concat(new Bytes(Convert.ToByte(c6)));
         
         return select;
     }
-    public int get_highest_combination(int c0, int c1, int c2, int c3, int c4, int c5, int c6)
+    public int GetHighestCombination(int c0, int c1, int c2, int c3, int c4, int c5, int c6)
     {
-        return _get_highest_combination(c0, c1, c2, c3, c4, c5, c6);
+        return getHighestCombination(c0, c1, c2, c3, c4, c5, c6);
     }
-    private int _get_highest_combination(int c0, int c1, int c2, int c3, int c4, int c5, int c6)
+    private int getHighestCombination(int c0, int c1, int c2, int c3, int c4, int c5, int c6)
     {
         int max = 0;
         for (int i = 0; i < 21; i++)
         {
-            Bytes combination = select_combination(c0, c1, c2, c3, c4, c5, c6, card_combinations[i]);
+            Bytes combination = selectCombination(c0, c1, c2, c3, c4, c5, c6, cardCombinations[i]);
             int cc0 = Convert.ToInt32(combination[0]);
             int cc1 = Convert.ToInt32(combination[1]);
             int cc2 = Convert.ToInt32(combination[2]);
             int cc3 = Convert.ToInt32(combination[3]);
             int cc4 = Convert.ToInt32(combination[4]);
-            int val = _get_combination_value(cc0, cc1, cc2, cc3, cc4);
+            int val = getCombinationValue(cc0, cc1, cc2, cc3, cc4);
             if (val > max)
                 max = val;
         }
         return max;
     }
-    public int get_combination_value(int c0, int c1, int c2, int c3, int c4)
+    public int GetCombinationValue(int c0, int c1, int c2, int c3, int c4)
     {
-        return _get_combination_value(c0, c1, c2, c3, c4);
+        return getCombinationValue(c0, c1, c2, c3, c4);
     }
-    private int _get_combination_value(int c0, int c1, int c2, int c3, int c4)
+    private int getCombinationValue(int c0, int c1, int c2, int c3, int c4)
     {
-        int cv0 = get_value(c0);
-        int cv1 = get_value(c1);
-        int cv2 = get_value(c2);
-        int cv3 = get_value(c3);
-        int cv4 = get_value(c4);
+        int cv0 = getValue(c0);
+        int cv1 = getValue(c1);
+        int cv2 = getValue(c2);
+        int cv3 = getValue(c3);
+        int cv4 = getValue(c4);
 
         // Straight flushes
         if (isStraightFlush(c0, c1, c2, c3, c4, cv0, cv1, cv2, cv3, cv4))
@@ -379,11 +372,11 @@ class MyProgram
     }
     private bool isFlush(int c0, int c1, int c2, int c3, int c4)
     {
-        int suit = get_suit(c0);
-        return (suit == get_suit(c1))
-            && (suit == get_suit(c2))
-            && (suit == get_suit(c3))
-            && (suit == get_suit(c4))
+        int suit = getSuit(c0);
+        return (suit == getSuit(c1))
+            && (suit == getSuit(c2))
+            && (suit == getSuit(c3))
+            && (suit == getSuit(c4))
         ;
     }
     private bool isStraightSimple(int c0, int c1, int c2, int c3, int c4)
@@ -408,9 +401,9 @@ class MyProgram
         if (isStraightSimple(c0, c1, c2, c3, c4))
             return true;
 
-        if (c0 != CARD_VAL_2)
+        if (c0 != 0)
             return false;
-        if (c4 != CARD_VAL_A)
+        if (c4 != 12)
             return false;
         
         if ((c1 == (c0 + 1))
